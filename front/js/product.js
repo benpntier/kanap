@@ -14,8 +14,6 @@ function addProductInfo(product) {
         productColor.innerHTML = color;
         document.querySelector("#colors").appendChild(productColor);
     }
-
-    
 }
 
 function fetchData(id) {
