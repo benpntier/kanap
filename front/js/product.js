@@ -23,7 +23,6 @@ function fetchData(id) {
 		})
 		.then((data) => {
 			productData = data;
-
 			addProductInfo(productData);
 			
 		});
