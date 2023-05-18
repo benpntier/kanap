@@ -8,11 +8,10 @@ function addProductInfo(product) {
     document.querySelector("#price").innerText = product.price;
     document.querySelector("#description").innerText = product.description;
 
+    const colorsList = document.getElementById("colors");
     for (color of product.colors) {
-        const productColor = document.createElement("option");
-        productColor.value = color;
-        productColor.innerHTML = color;
-        document.querySelector("#colors").appendChild(productColor);
+        const option = new Option(color, color);
+        colorsList.options.add(option);
     }
 }
 
