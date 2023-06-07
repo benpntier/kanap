@@ -44,6 +44,7 @@ function removeProduct(event) {
     totalPrice -= quantity*price;
     document.getElementById("totalPrice").textContent = totalPrice;
 
+    // remove product from DOM
     productArticle.remove();
 
     // remove product from local storage
