@@ -32,10 +32,17 @@ function removeProduct(event) {
 
     // update total quantity
     let totalQuantity = parseInt(document.getElementById("totalQuantity").textContent);
-    let newQuantity = event.target.value - event.target.oldValue;
-    totalQuantity += newQuantity;
+    let quantity = document.querySelector("[data-id='"+productId+"'] .itemQuantity").value;
+    totalQuantity -= quantity;
     document.getElementById("totalQuantity").textContent = totalQuantity;
-    event.target.oldValue = event.target.value;
+
+    // update total price
+    let totalPrice = parseInt(document.getElementById("totalPrice").textContent);
+    let price = document.querySelector("[data-id='"+productId+"'] .cart__item__content__description p:nth-of-type(2)").textContent;
+    price = price.slice(0, price.length - 1);
+    console.log(price);
+    totalPrice -= quantity*price;
+    document.getElementById("totalPrice").textContent = totalPrice;
 
     productArticle.remove();
 
@@ -51,7 +58,7 @@ function addCartInformation(cartJSON, productsData) {
     let totalPrice = 0;
 
     for (productJSON of cartJSON) {
-        productData = productsData.find(p => p._id === productJSON.id);
+        let productData = productsData.find(p => p._id === productJSON.id);
 
         const productImg = document.createElement("img");
         productImg.src = productData.imageUrl;
@@ -123,7 +130,7 @@ function addCartInformation(cartJSON, productsData) {
         document.getElementById("cart__items").appendChild(productArticle);
 
         totalQuantity += productJSON.quantity;
-        totalPrice += productData.price;
+        totalPrice += productJSON.quantity*productData.price;
     }
 
     document.getElementById("totalQuantity").textContent = totalQuantity;
