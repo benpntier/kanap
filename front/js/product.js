@@ -6,9 +6,9 @@ function addProductInfo(product) {
     productImg.alt = product.altTxt;
 
     document.querySelector(".item__img").appendChild(productImg);
-    document.querySelector("#title").innerText = product.name;
-    document.querySelector("#price").innerText = product.price;
-    document.querySelector("#description").innerText = product.description;
+    document.querySelector("#title").textContent = product.name;
+    document.querySelector("#price").textContent = product.price;
+    document.querySelector("#description").textContent = product.description;
 
     const colorsList = document.getElementById("colors");
     for (color of product.colors) {
@@ -57,6 +57,7 @@ function saveToLocalStorage(event) {
         }
 
         window.localStorage.setItem("cart", JSON.stringify(cartJSON));
+        window.location='cart.html'
     }
 }
 
@@ -67,6 +68,6 @@ window.onload = function() {
     fetchData(productID);
 
     cartButton = document.getElementById("addToCart");
-    cartButton.addEventListener("click", saveToLocalStorage);
+    cartButton.onclick = saveToLocalStorage;
     cartButton.productID = productID;
 };

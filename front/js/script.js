@@ -13,11 +13,11 @@ function addProductHTML(product) {
 
 	const productName = document.createElement("h3");
 	productName.className = "productName";
-	productName.innerText = product.name;
+	productName.textContent = product.name;
 
 	const productDescription = document.createElement("p");
 	productDescription.className = "productDescription"
-	productDescription.innerText = product.description
+	productDescription.textContent = product.description
 
 	productArticle.appendChild(productImg)
 	productArticle.appendChild(productName)
