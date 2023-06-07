@@ -1,4 +1,5 @@
 function updateQuantity(event) {
+    // update total quantity
     let totalQuantity = parseInt(document.getElementById("totalQuantity").textContent);
     let newQuantity = event.target.value - event.target.oldValue;
     totalQuantity += newQuantity;
@@ -21,6 +22,27 @@ function updateQuantity(event) {
     let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
     cartJSON.find(p => p.id === productId && p.color === productColor).quantity += newQuantity;
     window.localStorage.setItem("cart", JSON.stringify(cartJSON));
+}
+
+function removeProduct(event) {
+    // find product id and color
+    let productArticle = event.target.closest(".cart__item")
+    productId = productArticle.dataset.id;
+    productColor = productArticle.dataset.color;
+
+    // update total quantity
+    let totalQuantity = parseInt(document.getElementById("totalQuantity").textContent);
+    let newQuantity = event.target.value - event.target.oldValue;
+    totalQuantity += newQuantity;
+    document.getElementById("totalQuantity").textContent = totalQuantity;
+    event.target.oldValue = event.target.value;
+
+    productArticle.remove();
+
+    // remove product from local storage
+    let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
+    let newCartJSON = cartJSON.filter(p => !(p.id === productId && p.color === productColor));
+    window.localStorage.setItem("cart", JSON.stringify(newCartJSON));
 }
 
 function addCartInformation(cartJSON, productsData) {
@@ -74,6 +96,7 @@ function addCartInformation(cartJSON, productsData) {
         const deleteItemLabel = document.createElement("p");
         deleteItemLabel.className = "deleteItem";
         deleteItemLabel.textContent = "Supprimer";
+        deleteItemLabel.onclick = removeProduct;
     
         const cartItemContentSettingsDelete = document.createElement("div");
         cartItemContentSettingsDelete.className = "cart__item__content__settings__delete";
