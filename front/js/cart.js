@@ -13,8 +13,7 @@ function updateQuantity(event) {
 
     // update total price
     let totalPrice = parseInt(document.getElementById("totalPrice").textContent);
-    price = document.querySelector("[data-id='"+productId+"'] .cart__item__content__description p:nth-of-type(2)").textContent;
-    price = price.slice(0, price.length - 1);
+    price = parseFloat(document.querySelector("[data-id='"+productId+"'][data-color='"+productColor+"'] [price]").textContent);
     totalPrice += newQuantity*price;
     document.getElementById("totalPrice").textContent = totalPrice;
 
@@ -25,32 +24,33 @@ function updateQuantity(event) {
 }
 
 function removeProduct(event) {
-    // find product id and color
-    let productArticle = event.target.closest(".cart__item")
-    productId = productArticle.dataset.id;
-    productColor = productArticle.dataset.color;
 
-    // update total quantity
-    let totalQuantity = parseInt(document.getElementById("totalQuantity").textContent);
-    let quantity = document.querySelector("[data-id='"+productId+"'] .itemQuantity").value;
-    totalQuantity -= quantity;
-    document.getElementById("totalQuantity").textContent = totalQuantity;
+    if (window.confirm("Voulez-vous supprimer ce produit ?")) {
+        // find product id and color
+        let productArticle = event.target.closest(".cart__item")
+        productId = productArticle.dataset.id;
+        productColor = productArticle.dataset.color;
 
-    // update total price
-    let totalPrice = parseInt(document.getElementById("totalPrice").textContent);
-    let price = document.querySelector("[data-id='"+productId+"'] .cart__item__content__description p:nth-of-type(2)").textContent;
-    price = price.slice(0, price.length - 1);
-    console.log(price);
-    totalPrice -= quantity*price;
-    document.getElementById("totalPrice").textContent = totalPrice;
+        // update total quantity
+        let totalQuantity = parseInt(document.getElementById("totalQuantity").textContent);
+        let quantity = document.querySelector("[data-id='"+productId+"'][data-color='"+productColor+"'] .itemQuantity").value;
+        totalQuantity -= quantity;
+        document.getElementById("totalQuantity").textContent = totalQuantity;
 
-    // remove product from DOM
-    productArticle.remove();
+        // update total price
+        let totalPrice = parseInt(document.getElementById("totalPrice").textContent);
+        let price = parseFloat(document.querySelector("[data-id='"+productId+"'][data-color='"+productColor+"'] [price]").textContent);
+        totalPrice -= quantity*price;
+        document.getElementById("totalPrice").textContent = totalPrice;
 
-    // remove product from local storage
-    let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
-    let newCartJSON = cartJSON.filter(p => !(p.id === productId && p.color === productColor));
-    window.localStorage.setItem("cart", JSON.stringify(newCartJSON));
+        // remove product from DOM
+        productArticle.remove();
+
+        // remove product from local storage
+        let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
+        let newCartJSON = cartJSON.filter(p => !(p.id === productId && p.color === productColor));
+        window.localStorage.setItem("cart", JSON.stringify(newCartJSON));
+    }
 }
 
 function addCartInformation(cartJSON, productsData) {
@@ -77,6 +77,7 @@ function addCartInformation(cartJSON, productsData) {
     
         const productPrice = document.createElement("p");
         productPrice.textContent = productData.price + "€";
+        productPrice.setAttribute("price","");
     
         const cartItemContentDescription = document.createElement("div");
         cartItemContentDescription.className = "cart__item__content__description";
