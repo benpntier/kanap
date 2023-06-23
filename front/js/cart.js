@@ -1,5 +1,3 @@
-var productIDs;
-
 function updateQuantity(event) {
     // update total quantity
     let totalQuantity = parseInt(document.getElementById("totalQuantity").textContent);
@@ -142,7 +140,6 @@ function addCartInformation(cartJSON, productsData) {
 }
 
 function sendOrder(event) {
-
     let contact = {
         firstName: document.getElementById("firstName").value,
         lastName: document.getElementById("lastName").value,
@@ -151,15 +148,26 @@ function sendOrder(event) {
         email: document.getElementById("email").value,
     }
 
+    let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
+    let products = cartJSON.map(p => p.id);
+    console.log(products)
+
+    let order = {
+        contact,
+        products
+    }
+
     fetch("http://localhost:3000/api/products/order", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
           },
-          body: JSON.stringify(contact)
+          body: JSON.stringify(order)
     })
         .then((response) => {
-            return response.json();
+            rjson = response.json();
+            console.log(rjson);
+            return rjson;
         })
         .then((data) => {
             console.log(data);
@@ -179,6 +187,5 @@ function fetchData(cartJSON) {
 
 window.onload = function() {
     let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
-    productIDs = cartJSON.map(p => p.id);
     fetchData(cartJSON);
 };
