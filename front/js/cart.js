@@ -139,6 +139,45 @@ function addCartInformation(cartJSON, productsData) {
     document.getElementById("totalPrice").textContent = totalPrice;
 }
 
+function checkNoError() {
+    if (
+        !document.getElementById("firstName").value == "" &&
+        !document.getElementById("lastName").value == "" &&
+        !document.getElementById("address").value == "" &&
+        !document.getElementById("city").value == "" &&
+        !document.getElementById("email").value == "" &&
+        document.getElementById("firstNameErrorMsg").innerText == "" &&
+        document.getElementById("lastNameErrorMsg").innerText == "" &&
+        document.getElementById("addressErrorMsg").innerText == "" &&
+        document.getElementById("cityErrorMsg").innerText == "" &&
+        document.getElementById("emailErrorMsg").innerText == ""
+    ) {
+        document.getElementById("order").disabled = false;
+    } else {
+        document.getElementById("order").disabled = true;
+    }
+}
+
+function checkNoNumbers(event) {
+    const regexNoNumbers = /^([^0-9]*)$/;
+    if (!regexNoNumbers.test(event.target.value)) {
+        document.getElementById(event.target.id+"ErrorMsg").innerText = "/!\\ La saisie n'est pas au bon format";
+    } else {
+        document.getElementById(event.target.id+"ErrorMsg").innerText = "";
+    }
+    checkNoError();
+}
+
+function checkEmail(event) {
+    const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (!regexEmail.test(event.target.value)) {
+        document.getElementById("emailErrorMsg").innerText = "/!\\ L'adresse e-mail n'est pas au bon format";
+    } else {
+        document.getElementById("emailErrorMsg").innerText = "";
+    }
+    checkNoError();
+}
+
 function sendOrder(event) {
     let contact = {
         firstName: document.getElementById("firstName").value,
@@ -148,26 +187,8 @@ function sendOrder(event) {
         email: document.getElementById("email").value,
     }
 
-    const regexNoNumbers = /^([^0-9]*)$/
-    if (!regexNoNumbers.test(contact[firstName])) {
-        document.getElementById("firstNameErrorMsg").innerText = "/!\\ Le prénom n'est pas au bon format";
-    }
-    if (!regexNoNumbers.test(contact[lastName])) {
-        document.getElementById("lastNameErrorMsg").innerText = "/!\\ Le nom de famille n'est pas au bon format";
-    }
-    if (!regexNoNumbers.test(contact[city])) {
-        document.getElementById("cityErrorMsg").innerText = "/!\\ La ville n'est pas au bon format";
-    }
-
-    // regex source: https://www.w3resource.com/javascript/form/email-validation.php
-    const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    if (!regexEmail.test(contact[email])) {
-        document.getElementById("emailErrorMsg").innerText = "/!\\ L'adresse e-mail n'est pas au bon format";
-    }
-
     let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
     let products = cartJSON.map(p => p.id.toString()); //string array
-    console.log(products)
 
     let order = {
         contact,
@@ -183,11 +204,10 @@ function sendOrder(event) {
     })
         .then((response) => {
             rjson = response.json();
-            console.log(rjson);
             return rjson;
         })
         .then((data) => {
-            console.log(data);
+            window.location.href = "./confirmation.html?order="+data.orderId;
         });
 }
 
@@ -205,20 +225,12 @@ function fetchData(cartJSON) {
 window.onload = function() {
     let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
 
-    const fieldFirstName = document.getElementById("firstName");
-    fieldFirstName.onfocusout = function(){
-        const regexNoNumbers = /^([^0-9]*)$/
-        if (!regexNoNumbers.test(fieldFirstName.value)) {
-            document.getElementById("firstNameErrorMsg").innerText = "/!\\ Le prénom n'est pas au bon format";
-        }
-    }
+    document.getElementById("firstName").addEventListener("focusout", checkNoNumbers);
+    document.getElementById("lastName").addEventListener("focusout", checkNoNumbers);
+    document.getElementById("city").addEventListener("focusout", checkNoNumbers);
+    document.getElementById("email").addEventListener("focusout", checkEmail);
 
-    fieldEmail = document.getElementById("email");
-    fieldEmail.onfocusout = function() {
-        const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        if (!regexEmail.test(fielfieldEmailFirstName.value)) {
-            document.getElementById("emailErrorMsg").innerText = "/!\\ L'adresse e-mail n'est pas au bon format";
-        }
-    }
+    checkNoError();
+
     fetchData(cartJSON);
 };
