@@ -1,93 +1,107 @@
+// Mettre à jour la quantité et recalculer le prix total
 function updateQuantity(event) {
-    // update total quantity
+    
+    // Mettre à jour la quantité totale
     let totalQuantity = parseInt(document.getElementById("totalQuantity").textContent);
-    let newQuantity = event.target.value - event.target.oldValue;
+    let newQuantity = event.currentTarget.value - event.currentTarget.oldValue;
     totalQuantity += newQuantity;
     document.getElementById("totalQuantity").textContent = totalQuantity;
-    event.target.oldValue = event.target.value;
+    event.currentTarget.oldValue = event.currentTarget.value;
 
-    // find product id and color
-    let productArticle = event.target.closest(".cart__item")
+    // Trouver l'ID et la couleur du produit
+    let productArticle = event.currentTarget.closest(".cart__item")
     productId = productArticle.dataset.id;
     productColor = productArticle.dataset.color;
 
-    // update total price
+    // Mettre à jour le prix total
     let totalPrice = parseInt(document.getElementById("totalPrice").textContent);
     price = parseFloat(document.querySelector("[data-id='"+productId+"'][data-color='"+productColor+"'] [price]").textContent);
     totalPrice += newQuantity*price;
     document.getElementById("totalPrice").textContent = totalPrice;
 
-    // save new quantity to localStorage
+    // Enregistrer la nouvelle quantité dans le local storage
     let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
     cartJSON.find(p => p.id === productId && p.color === productColor).quantity += newQuantity;
     window.localStorage.setItem("cart", JSON.stringify(cartJSON));
 }
 
+// Enlever le produit du panier
 function removeProduct(event) {
 
     if (window.confirm("Voulez-vous supprimer ce produit ?")) {
-        // find product id and color
-        let productArticle = event.target.closest(".cart__item")
+        // Trouver l'ID et la couleur du produit
+        let productArticle = event.currentTarget.closest(".cart__item")
         productId = productArticle.dataset.id;
         productColor = productArticle.dataset.color;
 
-        // update total quantity
+        // Mettre à jour la quantité totale
         let totalQuantity = parseInt(document.getElementById("totalQuantity").textContent);
         let quantity = document.querySelector("[data-id='"+productId+"'][data-color='"+productColor+"'] .itemQuantity").value;
         totalQuantity -= quantity;
         document.getElementById("totalQuantity").textContent = totalQuantity;
 
-        // update total price
+        // Mettre à jour le prix total
         let totalPrice = parseInt(document.getElementById("totalPrice").textContent);
         let price = parseFloat(document.querySelector("[data-id='"+productId+"'][data-color='"+productColor+"'] [price]").textContent);
         totalPrice -= quantity*price;
         document.getElementById("totalPrice").textContent = totalPrice;
 
-        // remove product from DOM
+        // Enlever le produit du DOM
         productArticle.remove();
 
-        // remove product from local storage
+        // Enlever le produit du local storage
         let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
         let newCartJSON = cartJSON.filter(p => !(p.id === productId && p.color === productColor));
         window.localStorage.setItem("cart", JSON.stringify(newCartJSON));
     }
 }
 
+// Ajouter les informations du panier dans le DOM
 function addCartInformation(cartJSON, productsData) {
 
     let totalQuantity = 0;
     let totalPrice = 0;
 
+    // Pour chaque produit dans le panier
     for (productJSON of cartJSON) {
+        // Récupérer les informations du produit
         let productData = productsData.find(p => p._id === productJSON.id);
 
+        // Image
         const productImg = document.createElement("img");
         productImg.src = productData.imageUrl;
         productImg.alt = productData.altTxt;
     
+        // Contenant de l'image
         const productImgDiv = document.createElement("div");
         productImgDiv.className = "cart__item__img";
         productImgDiv.appendChild(productImg);
     
+        // Nom
         const productName = document.createElement("h2");
         productName.textContent = productData.name;
         
+        // Couleur
         const productColor = document.createElement("p");
         productColor.textContent = productJSON.color;
     
+        // Prix
         const productPrice = document.createElement("p");
         productPrice.textContent = productData.price + "€";
         productPrice.setAttribute("price","");
     
+        // Description
         const cartItemContentDescription = document.createElement("div");
         cartItemContentDescription.className = "cart__item__content__description";
         cartItemContentDescription.appendChild(productName);
         cartItemContentDescription.appendChild(productColor);
         cartItemContentDescription.appendChild(productPrice);
     
+        // Quantité (label)
         const quantityLabel = document.createElement("p");
         quantityLabel.textContent = "Qté : ";
     
+        // Quantité (champ)
         const quantityInput = document.createElement("input");
         quantityInput.type = "number";
         quantityInput.className = "itemQuantity";
@@ -97,80 +111,99 @@ function addCartInformation(cartJSON, productsData) {
         quantityInput.oldValue = productJSON.quantity;
         quantityInput.onchange = updateQuantity;
     
+        // Contenant de la quantité
         const cartItemContentSettingsQuantity = document.createElement("div");
         cartItemContentSettingsQuantity.className = "cart__item__content__settings__quantity";
         cartItemContentSettingsQuantity.appendChild(quantityLabel);
         cartItemContentSettingsQuantity.appendChild(quantityInput);
     
+        // Bouton Supprimer
         const deleteItemLabel = document.createElement("p");
         deleteItemLabel.className = "deleteItem";
         deleteItemLabel.textContent = "Supprimer";
         deleteItemLabel.onclick = removeProduct;
     
+        // Contenant du bouton Supprimer
         const cartItemContentSettingsDelete = document.createElement("div");
         cartItemContentSettingsDelete.className = "cart__item__content__settings__delete";
         cartItemContentSettingsDelete.appendChild(deleteItemLabel);
     
+        // Contenant de la quantité et du bouton Supprimer
         const cartItemContentSettings = document.createElement("div")
         cartItemContentSettings.className = "cart__item__content__settings";
         cartItemContentSettings.appendChild(cartItemContentSettingsQuantity);
         cartItemContentSettings.appendChild(cartItemContentSettingsDelete);
     
+        // Informations du produit
         const cartItemContent = document.createElement("div");
         cartItemContent.className = "cart__item__content";
         cartItemContent.appendChild(cartItemContentDescription);
         cartItemContent.appendChild(cartItemContentSettings);
     
+        // <article>
         const productArticle = document.createElement("article");
         productArticle.className = "cart__item";
         productArticle.dataset.id = productJSON.id;
         productArticle.dataset.color = productJSON.color;
-    
         productArticle.appendChild(productImgDiv);
         productArticle.appendChild(cartItemContent);
     
+        // Ajouter au DOM
         document.getElementById("cart__items").appendChild(productArticle);
 
+        // Incrémenter la quantité totale et le prix total
         totalQuantity += productJSON.quantity;
         totalPrice += productJSON.quantity*productData.price;
     }
 
+    // Définir la quantité totale et le prix totale
     document.getElementById("totalQuantity").textContent = totalQuantity;
     document.getElementById("totalPrice").textContent = totalPrice;
 }
 
+// Vérifier que les champs du formulaire ne soient pas vides et soient valides
 function checkNoError() {
+
+    // Vérification
     if (
+        // Champs non vides
         !document.getElementById("firstName").value == "" &&
         !document.getElementById("lastName").value == "" &&
         !document.getElementById("address").value == "" &&
         !document.getElementById("city").value == "" &&
         !document.getElementById("email").value == "" &&
+
+        // Champs valides (pas d'erreur affichée)
         document.getElementById("firstNameErrorMsg").innerText == "" &&
         document.getElementById("lastNameErrorMsg").innerText == "" &&
         document.getElementById("addressErrorMsg").innerText == "" &&
         document.getElementById("cityErrorMsg").innerText == "" &&
         document.getElementById("emailErrorMsg").innerText == ""
     ) {
+        // Activer le bouton Commander
         document.getElementById("order").disabled = false;
+        
     } else {
+        // Désactiver le bouton Commander
         document.getElementById("order").disabled = true;
     }
 }
 
+// Vérifier que le champ ne contienne pas de chiffre et ajouter (ou enlever) un message d'erreur
 function checkNoNumbers(event) {
     const regexNoNumbers = /^([^0-9]*)$/;
-    if (!regexNoNumbers.test(event.target.value)) {
-        document.getElementById(event.target.id+"ErrorMsg").innerText = "/!\\ La saisie n'est pas au bon format";
+    if (!regexNoNumbers.test(event.currentTarget.value)) {
+        document.getElementById(event.currentTarget.id+"ErrorMsg").innerText = "/!\\ La saisie n'est pas au bon format";
     } else {
-        document.getElementById(event.target.id+"ErrorMsg").innerText = "";
+        document.getElementById(event.currentTarget.id+"ErrorMsg").innerText = "";
     }
     checkNoError();
 }
 
+// Vérifier que le champ e-mail soit correct et ajouter (ou enlever) un message d'erreur
 function checkEmail(event) {
     const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    if (!regexEmail.test(event.target.value)) {
+    if (!regexEmail.test(event.currentTarget.value)) {
         document.getElementById("emailErrorMsg").innerText = "/!\\ L'adresse e-mail n'est pas au bon format";
     } else {
         document.getElementById("emailErrorMsg").innerText = "";
@@ -178,7 +211,10 @@ function checkEmail(event) {
     checkNoError();
 }
 
+// Envoyer la commande
 function sendOrder(event) {
+
+    // Créer l'objet contact
     let contact = {
         firstName: document.getElementById("firstName").value,
         lastName: document.getElementById("lastName").value,
@@ -187,14 +223,17 @@ function sendOrder(event) {
         email: document.getElementById("email").value,
     }
 
+    // Récupérer le tableau des ID des produits
     let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
     let products = cartJSON.map(p => p.id.toString()); //string array
 
+    // Créer l'objet à envoyer à l'API
     let order = {
         contact,
         products
     }
 
+    // Requête API
     fetch("http://localhost:3000/api/products/order", {
         method: 'POST',
         headers: {
@@ -207,10 +246,12 @@ function sendOrder(event) {
             return rjson;
         })
         .then((data) => {
+            // Rediriger vers la page de confirmation avec le numéro de commande
             window.location.href = "./confirmation.html?order="+data.orderId;
         });
 }
 
+// Récupérer les données des produits de l'API
 function fetchData(cartJSON) {
 	fetch("http://localhost:3000/api/products")
 		.then((response) => {
@@ -223,14 +264,18 @@ function fetchData(cartJSON) {
 }
 
 window.onload = function() {
+    // Récupérer le panier du local storage
     let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
 
+    // Ajouter des listeners sur les champs du formulaire pour les vérifier
     document.getElementById("firstName").addEventListener("focusout", checkNoNumbers);
     document.getElementById("lastName").addEventListener("focusout", checkNoNumbers);
     document.getElementById("city").addEventListener("focusout", checkNoNumbers);
     document.getElementById("email").addEventListener("focusout", checkEmail);
 
+    // Désactiver le bouton Commander si les champs du formulaires sont vides (ou mal remplis)
     checkNoError();
 
+    // Récupérer les données des produits de l'API
     fetchData(cartJSON);
 };
