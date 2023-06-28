@@ -148,8 +148,25 @@ function sendOrder(event) {
         email: document.getElementById("email").value,
     }
 
+    const regexNoNumbers = /^([^0-9]*)$/
+    if (!regexNoNumbers.test(contact[firstName])) {
+        document.getElementById("firstNameErrorMsg").innerText = "/!\\ Le prénom n'est pas au bon format";
+    }
+    if (!regexNoNumbers.test(contact[lastName])) {
+        document.getElementById("lastNameErrorMsg").innerText = "/!\\ Le nom de famille n'est pas au bon format";
+    }
+    if (!regexNoNumbers.test(contact[city])) {
+        document.getElementById("cityErrorMsg").innerText = "/!\\ La ville n'est pas au bon format";
+    }
+
+    // regex source: https://www.w3resource.com/javascript/form/email-validation.php
+    const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (!regexEmail.test(contact[email])) {
+        document.getElementById("emailErrorMsg").innerText = "/!\\ L'adresse e-mail n'est pas au bon format";
+    }
+
     let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
-    let products = cartJSON.map(p => p.id);
+    let products = cartJSON.map(p => p.id.toString()); //string array
     console.log(products)
 
     let order = {
@@ -187,5 +204,21 @@ function fetchData(cartJSON) {
 
 window.onload = function() {
     let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
+
+    const fieldFirstName = document.getElementById("firstName");
+    fieldFirstName.onfocusout = function(){
+        const regexNoNumbers = /^([^0-9]*)$/
+        if (!regexNoNumbers.test(fieldFirstName.value)) {
+            document.getElementById("firstNameErrorMsg").innerText = "/!\\ Le prénom n'est pas au bon format";
+        }
+    }
+
+    fieldEmail = document.getElementById("email");
+    fieldEmail.onfocusout = function() {
+        const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if (!regexEmail.test(fielfieldEmailFirstName.value)) {
+            document.getElementById("emailErrorMsg").innerText = "/!\\ L'adresse e-mail n'est pas au bon format";
+        }
+    }
     fetchData(cartJSON);
 };
