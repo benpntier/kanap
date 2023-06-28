@@ -1,28 +1,35 @@
 // Mettre à jour la quantité et recalculer le prix total
 function updateQuantity(event) {
-    
-    // Mettre à jour la quantité totale
-    let totalQuantity = parseInt(document.getElementById("totalQuantity").textContent);
-    let newQuantity = event.currentTarget.value - event.currentTarget.oldValue;
-    totalQuantity += newQuantity;
-    document.getElementById("totalQuantity").textContent = totalQuantity;
-    event.currentTarget.oldValue = event.currentTarget.value;
 
-    // Trouver l'ID et la couleur du produit
-    let productArticle = event.currentTarget.closest(".cart__item")
-    productId = productArticle.dataset.id;
-    productColor = productArticle.dataset.color;
+    // Si la quantité saisie est à 0
+    if (event.currentTarget.value == 0) {
+        // Simuler un clic sur le bouton "Supprimer"
+        document.querySelector(".deleteItem").click();
 
-    // Mettre à jour le prix total
-    let totalPrice = parseInt(document.getElementById("totalPrice").textContent);
-    price = parseFloat(document.querySelector("[data-id='"+productId+"'][data-color='"+productColor+"'] [price]").textContent);
-    totalPrice += newQuantity*price;
-    document.getElementById("totalPrice").textContent = totalPrice;
+    } else {
+        // Mettre à jour la quantité totale
+        let totalQuantity = parseInt(document.getElementById("totalQuantity").textContent);
+        let newQuantity = event.currentTarget.value - event.currentTarget.oldValue;
+        totalQuantity += newQuantity;
+        document.getElementById("totalQuantity").textContent = totalQuantity;
+        event.currentTarget.oldValue = event.currentTarget.value;
 
-    // Enregistrer la nouvelle quantité dans le local storage
-    let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
-    cartJSON.find(p => p.id === productId && p.color === productColor).quantity += newQuantity;
-    window.localStorage.setItem("cart", JSON.stringify(cartJSON));
+        // Trouver l'ID et la couleur du produit
+        let productArticle = event.currentTarget.closest(".cart__item")
+        productId = productArticle.dataset.id;
+        productColor = productArticle.dataset.color;
+
+        // Mettre à jour le prix total
+        let totalPrice = parseInt(document.getElementById("totalPrice").textContent);
+        price = parseFloat(document.querySelector("[data-id='"+productId+"'][data-color='"+productColor+"'] [price]").textContent);
+        totalPrice += newQuantity*price;
+        document.getElementById("totalPrice").textContent = totalPrice;
+
+        // Enregistrer la nouvelle quantité dans le local storage
+        let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
+        cartJSON.find(p => p.id === productId && p.color === productColor).quantity += newQuantity;
+        window.localStorage.setItem("cart", JSON.stringify(cartJSON));
+    }
 }
 
 // Enlever le produit du panier
