@@ -224,11 +224,11 @@ function sendOrder(event) {
 
     // Créer l'objet contact
     let contact = {
-        firstName: document.getElementById("firstName").value,
-        lastName: document.getElementById("lastName").value,
-        address: document.getElementById("address").value,
-        city: document.getElementById("city").value,
-        email: document.getElementById("email").value,
+        firstName: document.getElementById("firstName").value.toString(),
+        lastName: document.getElementById("lastName").value.toString(),
+        address: document.getElementById("address").value.toString(),
+        city: document.getElementById("city").value.toString(),
+        email: document.getElementById("email").value.toString(),
     }
 
     // Récupérer le tableau des ID des produits
@@ -241,22 +241,31 @@ function sendOrder(event) {
         products
     }
 
-    // Requête API
-    fetch("http://localhost:3000/api/products/order", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json;charset=utf-8'
-          },
-          body: JSON.stringify(order)
-    })
-        .then((response) => {
-            rjson = response.json();
-            return rjson;
+    // Vérifier la présence des champs
+    if (
+        contact.hasOwnProperty("firstName") &&
+        contact.hasOwnProperty("lastName") &&
+        contact.hasOwnProperty("address") &&
+        contact.hasOwnProperty("city") &&
+        contact.hasOwnProperty("email")
+    ) {
+        // Requête API
+        fetch("http://localhost:3000/api/products/order", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(order)
         })
-        .then((data) => {
-            // Rediriger vers la page de confirmation avec le numéro de commande
-            window.location.href = "./confirmation.html?order="+data.orderId;
-        });
+            .then((response) => {
+                rjson = response.json();
+                return rjson;
+            })
+            .then((data) => {
+                // Rediriger vers la page de confirmation avec le numéro de commande
+                window.location.href = "./confirmation.html?order="+data.orderId;
+            });
+    }
 }
 
 // Récupérer les données des produits de l'API
