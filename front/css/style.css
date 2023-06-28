@@ -22,6 +22,11 @@ h2 {
 .logo {
 	height: 100px;
 }
+.item__content__addButton button:disabled, .cart__order__form__submit input:disabled {
+	color: #aebfd1;
+	background-color: #445b73;
+	pointer-events: none;
+}
 
 /*maxwidth + centering*/
 .limitedWidthBlockContainer {
