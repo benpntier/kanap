@@ -199,12 +199,23 @@ function checkNoError() {
 // Vérifier que le champ ne contienne pas de caractère spécial
 function checkSpecialCharacter(event) {
     // regex : on accepte uniquement des lettres (de n'importe quelle langue), caractère espace, apostrophe ou tiret
-    const regexNoSpecialCharacter= /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ '-]+$/;
-    console.log(regexNoSpecialCharacter.test(event.currentTarget.value))
+    const regexNoSpecialCharacter = /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ '-]+$/;
     if (!regexNoSpecialCharacter.test(event.currentTarget.value)) {
         document.getElementById(event.currentTarget.id+"ErrorMsg").innerText = "/!\\ La saisie n'est pas au bon format";
     } else {
         document.getElementById(event.currentTarget.id+"ErrorMsg").innerText = "";
+    }
+    checkNoError();
+}
+
+// Vérifier que le champ adresse soit correct
+function checkAddress(event) {
+    // regex : on accepte uniquement des chiffres, lettres (de n'importe quelle langue), caractère espace, apostrophe, tiret, point, esperluette, dièse ou parenthèses
+    const regexAddress= /^[0-9a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ '-,.&#()]+$/;
+    if (!regexAddress.test(event.currentTarget.value)) {
+        document.getElementById("addressErrorMsg").innerText = "/!\\ L'adresse n'est pas au bon format";
+    } else {
+        document.getElementById("addressErrorMsg").innerText = "";
     }
     checkNoError();
 }
@@ -291,6 +302,7 @@ window.onload = function() {
     // Ajouter des listeners sur les champs du formulaire pour les vérifier
     document.getElementById("firstName").onchange = checkSpecialCharacter;
     document.getElementById("lastName").onchange = checkSpecialCharacter;
+    document.getElementById("address").onchange = checkAddress;
     document.getElementById("city").onchange = checkSpecialCharacter;
     document.getElementById("email").onchange = checkEmail;
 
