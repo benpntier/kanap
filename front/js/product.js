@@ -23,7 +23,7 @@ function addProductInfo(product) {
     }
 }
 
-// Récupérer les données du produit de l'API
+// Récupérer les données d'un produit de l'API
 function fetchData(id) {
 	fetch("http://localhost:3000/api/products/"+id)
 		.then((response) => {
