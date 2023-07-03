@@ -6,7 +6,7 @@ function addProductHTML(product) {
 
 	// <a>
 	const productLink = document.createElement("a");
-	productLink.href = "./product.html?id=" + product._id;
+	productLink.href = "./product.html?id=" + encodeURIComponent(product._id);
 
 	// <article>
 	const productArticle = document.createElement("article");

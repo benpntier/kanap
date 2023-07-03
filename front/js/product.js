@@ -11,9 +11,9 @@ function addProductInfo(product) {
     document.querySelector(".item__img").appendChild(productImg);
 
     // Informations du produit
-    document.querySelector("#title").textContent = product.name;
-    document.querySelector("#price").textContent = product.price;
-    document.querySelector("#description").textContent = product.description;
+    document.getElementById("title").textContent = product.name;
+    document.getElementById("price").textContent = product.price;
+    document.getElementById("description").textContent = product.description;
 
     // Options de couleur
     const colorsList = document.getElementById("colors");

@@ -196,10 +196,12 @@ function checkNoError() {
     }
 }
 
-// Vérifier que le champ ne contienne pas de chiffre et ajouter (ou enlever) un message d'erreur
-function checkNoNumbers(event) {
-    const regexNoNumbers = /^([^0-9]*)$/;
-    if (!regexNoNumbers.test(event.currentTarget.value)) {
+// Vérifier que le champ ne contienne pas de caractère spécial
+function checkSpecialCharacter(event) {
+    // regex : on accepte uniquement des lettres (de n'importe quelle langue), caractère espace, apostrophe ou tiret
+    const regexNoSpecialCharacter= /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ '-]+$/;
+    console.log(regexNoSpecialCharacter.test(event.currentTarget.value))
+    if (!regexNoSpecialCharacter.test(event.currentTarget.value)) {
         document.getElementById(event.currentTarget.id+"ErrorMsg").innerText = "/!\\ La saisie n'est pas au bon format";
     } else {
         document.getElementById(event.currentTarget.id+"ErrorMsg").innerText = "";
@@ -224,11 +226,11 @@ function sendOrder(event) {
 
     // Créer l'objet contact
     let contact = {
-        firstName: document.getElementById("firstName").value.toString(),
-        lastName: document.getElementById("lastName").value.toString(),
-        address: document.getElementById("address").value.toString(),
-        city: document.getElementById("city").value.toString(),
-        email: document.getElementById("email").value.toString(),
+        firstName: document.getElementById("firstName").value,
+        lastName: document.getElementById("lastName").value,
+        address: document.getElementById("address").value,
+        city: document.getElementById("city").value,
+        email: document.getElementById("email").value,
     }
 
     // Récupérer le tableau des ID des produits
@@ -263,7 +265,9 @@ function sendOrder(event) {
             })
             .then((data) => {
                 // Rediriger vers la page de confirmation avec le numéro de commande
-                window.location.href = "./confirmation.html?order="+data.orderId;
+                cartJSON = [];
+                window.localStorage.setItem("cart", JSON.stringify(cartJSON));
+                window.location.href = "./confirmation.html?order="+encodeURIComponent(data.orderId);
             });
     }
 }
@@ -285,10 +289,10 @@ window.onload = function() {
     let cartJSON = JSON.parse(window.localStorage.getItem("cart"));
 
     // Ajouter des listeners sur les champs du formulaire pour les vérifier
-    document.getElementById("firstName").addEventListener("focusout", checkNoNumbers);
-    document.getElementById("lastName").addEventListener("focusout", checkNoNumbers);
-    document.getElementById("city").addEventListener("focusout", checkNoNumbers);
-    document.getElementById("email").addEventListener("focusout", checkEmail);
+    document.getElementById("firstName").onchange = checkSpecialCharacter;
+    document.getElementById("lastName").onchange = checkSpecialCharacter;
+    document.getElementById("city").onchange = checkSpecialCharacter;
+    document.getElementById("email").onchange = checkEmail;
 
     // Désactiver le bouton Commander si les champs du formulaires sont vides (ou mal remplis)
     checkNoError();
