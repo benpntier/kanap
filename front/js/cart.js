@@ -223,7 +223,7 @@ function checkAddress(event) {
 // Vérifier que le champ e-mail soit correct et ajouter (ou enlever) un message d'erreur
 function checkEmail(event) {
     // source : https://www.w3resource.com/javascript/form/email-validation.php
-    const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/;
     if (!regexEmail.test(event.currentTarget.value)) {
         document.getElementById("emailErrorMsg").innerText = "/!\\ L'adresse e-mail n'est pas au bon format";
     } else {
