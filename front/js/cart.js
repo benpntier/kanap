@@ -262,7 +262,7 @@ function sendOrder(event) {
         contact.hasOwnProperty("city") &&
         contact.hasOwnProperty("email")
     ) {
-        // Requête API
+        // Requête API POST
         fetch("http://localhost:3000/api/products/order", {
             method: 'POST',
             headers: {
