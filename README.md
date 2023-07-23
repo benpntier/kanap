@@ -3,7 +3,7 @@
 
 ![Banner](kanap-banner.png)
 
-**Kanap** est une marque de canapés qui vend ses produits depuis sa boutique exclusivement. Aujourd’hui, celle-ci souhaiterait avoir une plateforme de e-commerce en plus de sa boutique physique pour vendre ses produits sur Internet. À partir d'une interface **front-end** en **HTML/CSS** existante, l'objectif est donc d'**intégrer dynamiquement** les éléments de l’**API** dans les différentes pages web avec **JavaScript**. Dans un second temps, le but est de mettre en place un plan de test d’acceptation pour valider le site web réalisé.
+**Kanap** est une marque de canapés qui vend ses produits depuis sa boutique exclusivement. *Aujourd’hui, celle-ci souhaiterait avoir une plateforme de e-commerce en plus de sa boutique physique pour vendre ses produits sur Internet.* À partir d'une interface **front-end** en **HTML/CSS** existante, l'objectif est donc d'**intégrer dynamiquement** les éléments de l’**API** dans les différentes pages web avec **JavaScript**. Dans un second temps, le but est de mettre en place un plan de test d’acceptation pour valider le site web réalisé.
 
 ## Architecture générale
 
